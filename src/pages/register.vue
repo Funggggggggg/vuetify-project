@@ -43,9 +43,9 @@
 </template>
 
 <script setup>
-import { useForm, useField } from 'vee-validate'
-import * as yup from 'yup'
-import validator from 'validator'
+import { useForm, useField } from 'vee-validate' //類似表單功能，與 yup 搭配使用
+import * as yup from 'yup'// 語法參照檔案
+import validator from 'validator' //後端 email 驗證
 import { useI18n } from 'vue-i18n';
 import { useAxios } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
@@ -57,7 +57,8 @@ const { api } = useAxios()
 const createSnackbar = useSnackbar()
 const router = useRouter()
 
-// yup 套件 Yup 是一個常用的 JavaScript 驗證函式庫，用來進行物件結構的驗證，通常和表單處理搭配使用。它可以幫助你驗證數據是否符合某些規則，並且支援各種常見的驗證模式，如數字、字串、電子郵件、最小/最大長度等。
+// 寫法與後端 model 相像，直接參照改寫
+// yup 套件 Yup 是一個常用的 JavaScript 驗證函式庫，用來進行物件結構的驗證，通常和表單處理搭配使用。
 const schema = yup.object({
   account: yup
     //資料型態是文字
