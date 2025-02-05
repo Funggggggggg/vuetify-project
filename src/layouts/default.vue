@@ -1,33 +1,17 @@
 <template>
   <v-app-bar>
     <v-container class="d-flex align-center">
-      <v-btn to="/" :active="false">購物網站</v-btn>
+      <v-btn to="/" :active="false">放 logo 圖回 welcome</v-btn>
       <v-spacer />
         <template v-for="nav of navs" :key="nav.to">
           <v-btn v-if="nav.show" :to="nav.to" :prepend-icon="nav.icon">
             {{ nav.text }}
-            <v-badge v-if="nav.to === '/cart'" :content="user.cart" floating color="red"></v-badge>
+            <!-- 訊息通知顯現 -->
+            <v-badge v-if="user.isLoggedIn && user.notifications > 0" :content="user.notifications" floating color="red"></v-badge>
           </v-btn>
         </template>
-      <!-- 跑完迴圈後再跑登出(tr作法) -->
-        <v-btn v-if="user.isLoggedIn" prepend-icon="mdi-account-arrow-right" @click="logout">{{ $t('nav.logout') }}</v-btn>
-        <!-- 語言 -->
-        <v-menu>
-        <template #activator="{ props }">
-          <v-btn v-bind="props">
-            <v-icon icon="mdi-translate"></v-icon>
-          </v-btn>
-        </template>
-        <v-list>
-            <v-list-item
-              v-for="lang in langs"
-              :key="lang.value"
-              @click="$i18n.locale = lang.value"
-            >
-            {{ lang.text }}
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <!-- 跑完迴圈後再跑登出 (tr作法) -->
+        <v-btn v-if="user.isLoggedIn" prepend-icon="mdi-account-arrow-right" @click="logout">{{ '登出' }}</v-btn>
     </v-container>
   </v-app-bar>
   <v-main>
@@ -37,13 +21,11 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { useAxios } from '@/composables/axios' // 登出
 import { useSnackbar } from 'vuetify-use-dialog' // register.vue
 import { useRouter } from 'vue-router'
 
-const { t } = useI18n()
 const user = useUserStore()
 const { apiAuth } = useAxios() // 登出
 const createSnackbar = useSnackbar() // register.vue
@@ -53,18 +35,15 @@ const router = useRouter()
 // 導覽列項目
 const navs = computed(() => {
   return [
-    { to: '/register', text: t('nav.register'), icon: 'mdi-account-plus' , show: !user.isLoggedIn },
-    { to: '/login', text: t('nav.login'), icon: 'mdi-account-arrow-left' , show: !user.isLoggedIn  },
-    { to: '/cart', text: t('nav.cart'), icon: 'mdi-cart', show: user.isLoggedIn },
-    { to: '/orders', text: t('nav.orders'), icon: 'mdi-format-list-bulleted', show: user.isLoggedIn },
-    { to: '/admin', text: t('nav.admin'), icon: 'mdi-cog', show: user.isLoggedIn && user.isAdmin },
+    { icon: 'mdi-chat-processing', show: user.isLoggedIn }, //訊息通知 => 使用者登入時
+    { to: '/register', text: '註冊', icon: 'mdi-account-plus' , show: !user.isLoggedIn },
+    { to: '/login', text: '登入', icon: 'mdi-account-arrow-left' , show: !user.isLoggedIn  },
+    { to: '/userPage', text: '個人頁面', icon: 'mdi-account', show: user.isLoggedIn },
+    { to: '/about', text: '關於', show: true },
+    { to: '/admin', text: '後台管理', icon: 'mdi-cog', show: user.isLoggedIn && user.isAdmin },
   ]
 })
 
-const langs = [
-  { text: '繁體中文', value: 'zhHant' },
-  { text: 'English', value: 'en' },
-]
 // 登出
 const logout = async () => {
   try {
@@ -74,7 +53,7 @@ const logout = async () => {
   }
   user.logout()
   createSnackbar({
-    text: t('logout.success'),
+    text: '登出成功',
     snackbarProps: {
       color: 'green'
     }

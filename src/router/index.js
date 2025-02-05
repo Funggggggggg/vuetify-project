@@ -10,7 +10,6 @@ import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
 import { useAxios } from '@/composables/axios'
 import { useUserStore } from '@/stores/user'
-import i18n from '@/i18n'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -49,7 +48,7 @@ router.beforeEach(async (to, from, next) => {
 })
 
 router.afterEach((to) => {
-  document.title = i18n.global.t(to.meta.title)+ ' | 購物網站'
+  document.title = to.meta.title + ' | 購物網站'
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804
